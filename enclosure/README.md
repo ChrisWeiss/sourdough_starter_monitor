@@ -16,13 +16,15 @@ Original insert cutouts are Grove-shaped. This project uses **HC-SR04** + **BME2
 
 OpenSCAD source: [`adapter/lid_insert_hc_sr04_bme280.scad`](adapter/lid_insert_hc_sr04_bme280.scad)
 
-- `lid_insert()` — dual transducer holes + BME280 vent on a ~70 mm disk
-- `board_adapter()` — shallow pocket for Feather / XIAO-sized nRF52840 in the upper bay
+| Rendered STL | Role |
+|--------------|------|
+| [`adapter/lid_insert_hc_sr04_bme280.stl`](adapter/lid_insert_hc_sr04_bme280.stl) | Dual transducer holes + BME280 vent on a ~70 mm disk |
+| [`adapter/board_adapter_nrf52840.stl`](adapter/board_adapter_nrf52840.stl) | Shallow pocket for Feather / XIAO-sized nRF52840 |
 
-Render STLs with [OpenSCAD](https://openscad.org/):
+Render (or re-tune after measuring your modules):
 
 ```bash
-openscad -o adapter/lid_insert_hc_sr04_bme280.stl adapter/lid_insert_hc_sr04_bme280.scad
+./scripts/render_enclosure.sh
 ```
 
-Tune `us_hole_d`, `us_spacing`, and board pocket dimensions to your exact modules before printing.
+Tune `us_hole_d`, `us_spacing`, and board pocket dimensions in the `.scad` before printing. Fit-check against a Ball jar lid and the vendored v2.5 stack before committing to a long print.

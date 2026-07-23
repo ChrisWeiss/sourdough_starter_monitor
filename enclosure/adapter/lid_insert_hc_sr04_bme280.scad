@@ -1,8 +1,15 @@
 // Lid insert remix for HC-SR04 + BME280 on a ~70mm canning-lid style disk.
 // Print as a replacement for sourd.io insert_v25 when using common junk-box sensors.
 // Units: millimeters
+//
+// Render:
+//   openscad -o lid_insert_hc_sr04_bme280.stl -D 'PART="lid_insert"' lid_insert_hc_sr04_bme280.scad
+//   openscad -o board_adapter_nrf52840.stl -D 'PART="board_adapter"' lid_insert_hc_sr04_bme280.scad
+// Or: ../scripts/render_enclosure.sh
 
 $fn = 64;
+
+PART = "lid_insert"; // "lid_insert" | "board_adapter"
 
 lid_od = 70;
 lid_id = 62;
@@ -47,6 +54,8 @@ module lid_insert() {
   }
 }
 
-// Uncomment one:
-lid_insert();
-// board_adapter();
+if (PART == "board_adapter") {
+  board_adapter();
+} else {
+  lid_insert();
+}

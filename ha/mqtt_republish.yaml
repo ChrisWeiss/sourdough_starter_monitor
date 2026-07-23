@@ -1,23 +1,32 @@
 # Republish BTHome sourdough readings to MQTT (sourd.io-compatible JSON)
+# Reference copy — prefer installing via Home Assistant UI / config API.
 # Adjust entity_id values after HA discovers the BTHome device.
 
 alias: Sourdough BTHome → MQTT
 id: sourdough_bthome_mqtt_republish
+description: >-
+  Mirror BTHome sourdough climate/distance/battery entities to MQTT as
+  sourd.io-shaped JSON for existing broker consumers.
 mode: queued
 max: 5
-trigger:
-  - platform: state
+triggers:
+  - trigger: state
     entity_id:
       - sensor.sourdough_temperature
       - sensor.sourdough_humidity
       - sensor.sourdough_distance
       - sensor.sourdough_battery
-condition:
-  - condition: template
-    value_template: >-
-      {{ states('sensor.sourdough_temperature') not in ['unknown', 'unavailable', 'none'] }}
-action:
-  - service: mqtt.publish
+conditions:
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: sensor.sourdough_temperature
+        state:
+          - unknown
+          - unavailable
+          - none
+actions:
+  - action: mqtt.publish
     data:
       topic: sourdough/sourdough/state
       retain: true

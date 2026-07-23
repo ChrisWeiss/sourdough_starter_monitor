@@ -35,4 +35,6 @@ Replace the middle path segment with a stable device id if you run more than one
 
 ## Automation
 
-See [`mqtt_republish.yaml`](mqtt_republish.yaml). Copy into `automations.yaml` or use a package under `packages/`.
+The live Home Assistant automation is created via the config API (alias **Sourdough BTHome → MQTT**, id `sourdough_bthome_mqtt_republish`). A checked-in reference copy lives in [`mqtt_republish.yaml`](mqtt_republish.yaml) for package/YAML installs.
+
+After the BTHome device appears, confirm a retained message on `sourdough/sourdough/state` whenever temperature/humidity/distance/battery updates.

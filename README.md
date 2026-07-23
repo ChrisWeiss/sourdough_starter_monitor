@@ -8,32 +8,33 @@ Instead of Twilio Narrowband cellular, the jar node **advertises BTHome v2 over 
 
 | Role | Prototype | Production |
 |------|-----------|------------|
-| MCU | Lolin / WeMos ESP32-WROOM DevKit | nRF52840 (on order) + LiPo |
+| MCU | Lolin / WeMos ESP32-WROOM DevKit | nRF52840 (Feather or XIAO) + LiPo |
 | Climate | BME280 (I2C) | same |
 | Distance | HC-SR04 (trig/echo; level-shift Echo) | 3.3V-tolerant ultrasonic or 5V boost + divider |
 | Enclosure | Bench wiring | sourd.io v2.5 jar stack + remixed lid insert |
 
-See [docs/wiring.md](docs/wiring.md).
+See [docs/wiring.md](docs/wiring.md) and [docs/bringup.md](docs/bringup.md).
 
 ## Firmware
 
 PlatformIO project in [`firmware/`](firmware/):
 
 ```bash
+# One-shot build + flash + monitor (auto-detects USB serial)
+./scripts/bringup_esp32.sh
+
 cd firmware
 pio run -e lolin-esp32          # build prototype
-pio run -e lolin-esp32 -t upload
-pio device monitor -b 115200
-
-pio run -e nrf52840             # when board is available (Feather target)
+pio run -e nrf52840             # Adafruit Feather
+pio run -e nrf52840-xiao        # Seeed XIAO nRF52840
 ```
 
-Duty cycle: wake → read sensors → advertise ~1.5 s → deep sleep (default **90 s**, `SAMPLE_INTERVAL_SEC`).
+Duty cycle: wake → read sensors → advertise ~1.5 s → sleep (default **90 s**, `SAMPLE_INTERVAL_SEC`).
 
 ## Home Assistant + MQTT
 
 1. Discover the BTHome device (name `sourdough`).
-2. Install [ha/mqtt_republish.yaml](ha/mqtt_republish.yaml).
+2. Automation **Sourdough BTHome → MQTT** republishes to the broker (see [ha/](ha/)).
 3. Subscribe to `sourdough/sourdough/state`:
 
 ```json
@@ -44,7 +45,11 @@ Details: [docs/home-assistant.md](docs/home-assistant.md), [ha/README.md](ha/REA
 
 ## Enclosure
 
-Vendored sourd.io STLs plus OpenSCAD remix: [enclosure/README.md](enclosure/README.md).
+Vendored sourd.io STLs plus OpenSCAD remix and rendered adapters: [enclosure/README.md](enclosure/README.md).
+
+```bash
+./scripts/render_enclosure.sh
+```
 
 ## License
 

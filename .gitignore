@@ -7,3 +7,5 @@
 .DS_Store
 secrets.h
 mqttcreds.h
+.specstory/
+.cursorindexingignore

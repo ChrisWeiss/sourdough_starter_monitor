@@ -9,7 +9,35 @@
 static Adafruit_BME280 bme;
 static bool bme_ok = false;
 
+static void ultrasonic_power(bool on) {
+#if defined(PIN_US_PWR)
+  digitalWrite(PIN_US_PWR, on ? HIGH : LOW);
+  if (on) {
+    delay(60); // HC-SR04 settle after VCC rise
+  }
+#else
+  (void)on;
+#endif
+}
+
+static void i2c_scan_log() {
+  Serial.println(F("I2C scan:"));
+  uint8_t found = 0;
+  for (uint8_t addr = 1; addr < 127; addr++) {
+    Wire.beginTransmission(addr);
+    if (Wire.endTransmission() == 0) {
+      Serial.printf("  - 0x%02X\n", addr);
+      found++;
+    }
+  }
+  if (found == 0) {
+    Serial.println(F("  (no devices)"));
+  }
+}
+
 static long measure_distance_cm() {
+  ultrasonic_power(true);
+
   digitalWrite(PIN_US_TRIG, LOW);
   delayMicroseconds(2);
   digitalWrite(PIN_US_TRIG, HIGH);
@@ -17,6 +45,9 @@ static long measure_distance_cm() {
   digitalWrite(PIN_US_TRIG, LOW);
 
   unsigned long duration = pulseIn(PIN_US_ECHO, HIGH, US_TIMEOUT_US);
+
+  ultrasonic_power(false);
+
   if (duration == 0) {
     return -1;
   }
@@ -29,6 +60,11 @@ bool sensors_begin() {
   pinMode(PIN_US_ECHO, INPUT);
   digitalWrite(PIN_US_TRIG, LOW);
 
+#if defined(PIN_US_PWR)
+  pinMode(PIN_US_PWR, OUTPUT);
+  digitalWrite(PIN_US_PWR, LOW);
+#endif
+
 #if defined(BOARD_ESP32)
   Wire.begin(PIN_BME_SDA, PIN_BME_SCL);
 #else
@@ -38,6 +74,9 @@ bool sensors_begin() {
   if (!bme_ok) {
     // Common alternate address
     bme_ok = bme.begin(0x77, &Wire);
+  }
+  if (!bme_ok) {
+    i2c_scan_log();
   }
   if (bme_ok) {
     bme.setSampling(Adafruit_BME280::MODE_FORCED,

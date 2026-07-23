@@ -17,7 +17,11 @@ Echo voltage divider (example): Echo → 2.2kΩ → GPIO26 → 4.7kΩ → GND.
 
 Override pins in `platformio.ini` `build_flags` (`PIN_*`).
 
-## Production — nRF52840 (Adafruit Feather defaults in `platformio.ini`)
+Bring-up steps: [bringup.md](bringup.md).
+
+## Production — nRF52840
+
+### Adafruit Feather (`env:nrf52840`)
 
 | Signal        | Feather pin | Notes                                      |
 |---------------|-------------|--------------------------------------------|
@@ -25,11 +29,21 @@ Override pins in `platformio.ini` `build_flags` (`PIN_*`).
 | BME280 SCL    | 26 (SCL)   |                                            |
 | HC-SR04 Trig  | 27          | Adjust to free GPIOs on your board         |
 | HC-SR04 Echo  | 7           | Must be ≤ 3.3V                             |
+| HC-SR04 VCC   | MOSFET out  | Optional `PIN_US_PWR` gate (see power.md)  |
+
+### Seeed XIAO nRF52840 (`env:nrf52840-xiao`)
+
+| Signal        | XIAO pin | Notes                          |
+|---------------|----------|--------------------------------|
+| BME280 SDA    | D4 (SDA) | Confirm silkscreen on your rev |
+| BME280 SCL    | D5 (SCL) |                                |
+| HC-SR04 Trig  | D6       | Free GPIO                      |
+| HC-SR04 Echo  | D7       | Must be ≤ 3.3V                 |
 
 nRF52840 has no 5V rail. Options:
 
-1. Use a **3.3V-tolerant HC-SR04** / RCWL-1601 / similar.
-2. Or a small boost to 5V for the module + divider on Echo.
+1. Use a **3.3V-tolerant HC-SR04** / RCWL-1601 / AJ-SR04M in 3.3V mode.
+2. Or a small boost to 5V for the module + **divider on Echo** (never feed 5V into GPIO).
 
 ## Power
 
