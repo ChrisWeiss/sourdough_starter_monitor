@@ -1,6 +1,12 @@
 # Wiring
 
+Assembly diagrams are generated with [WireViz](https://github.com/wireviz/WireViz) from YAML under [`wiring/`](wiring/). Regenerate with `./scripts/render_wiring.sh` (see [`wiring/README.md`](wiring/README.md)).
+
+Pin tables below stay aligned with `PIN_*` in `firmware/platformio.ini`.
+
 ## Prototype — Lolin / WeMos ESP32-WROOM
+
+![ESP32 assembly wiring](wiring/generated/esp32.svg)
 
 | Signal        | ESP32 GPIO | Notes                                      |
 |---------------|------------|--------------------------------------------|
@@ -23,6 +29,8 @@ Bring-up steps: [bringup.md](bringup.md).
 
 ### Adafruit Feather (`env:nrf52840`)
 
+![Feather nRF52840 assembly wiring](wiring/generated/feather.svg)
+
 | Signal        | Feather pin | Notes                                      |
 |---------------|-------------|--------------------------------------------|
 | BME280 SDA    | 25 (SDA)   | Board defaults; Wire.begin()               |
@@ -32,6 +40,8 @@ Bring-up steps: [bringup.md](bringup.md).
 | HC-SR04 VCC   | MOSFET out  | Optional `PIN_US_PWR` gate (see power.md)  |
 
 ### Seeed XIAO nRF52840 (`env:nrf52840-xiao`)
+
+![XIAO nRF52840 assembly wiring](wiring/generated/xiao.svg)
 
 | Signal        | XIAO pin | Notes                          |
 |---------------|----------|--------------------------------|

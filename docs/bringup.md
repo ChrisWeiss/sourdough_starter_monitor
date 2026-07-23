@@ -4,7 +4,11 @@ Goal: USB-powered Lolin/WeMos ESP32-WROOM advertising BTHome so Home Assistant c
 
 ## Wiring checklist
 
-Follow [wiring.md](wiring.md). Before powering USB:
+Follow [wiring.md](wiring.md) and the ESP32 assembly diagram:
+
+![ESP32 assembly wiring](wiring/generated/esp32.svg)
+
+Before powering USB:
 
 1. BME280 VCC → 3V3, GND → GND, SDA → GPIO21, SCL → GPIO22
 2. HC-SR04 VCC → **5V**, GND → GND, Trig → GPIO25

@@ -13,7 +13,7 @@ Instead of Twilio Narrowband cellular, the jar node **advertises BTHome v2 over 
 | Distance | HC-SR04 (trig/echo; level-shift Echo) | 3.3V-tolerant ultrasonic or 5V boost + divider |
 | Enclosure | Bench wiring | sourd.io v2.5 jar stack + remixed lid insert |
 
-See [docs/wiring.md](docs/wiring.md) and [docs/bringup.md](docs/bringup.md).
+See [docs/wiring.md](docs/wiring.md) (WireViz assembly diagrams) and [docs/bringup.md](docs/bringup.md). Regenerate diagrams with `./scripts/render_wiring.sh`.
 
 ## Firmware
 
