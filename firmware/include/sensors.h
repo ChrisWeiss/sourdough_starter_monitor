@@ -1,0 +1,15 @@
+#pragma once
+
+#include <stdint.h>
+
+struct SensorReading {
+  float temperature_c;
+  float humidity_pct;
+  float pressure_hpa;
+  long distance_cm;
+  bool climate_ok;
+  bool distance_ok;
+};
+
+bool sensors_begin();
+SensorReading sensors_read();

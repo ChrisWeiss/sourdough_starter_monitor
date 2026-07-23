@@ -1,0 +1,31 @@
+# Republish BTHome sourdough readings to MQTT (sourd.io-compatible JSON)
+# Adjust entity_id values after HA discovers the BTHome device.
+
+alias: Sourdough BTHome → MQTT
+id: sourdough_bthome_mqtt_republish
+mode: queued
+max: 5
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.sourdough_temperature
+      - sensor.sourdough_humidity
+      - sensor.sourdough_distance
+      - sensor.sourdough_battery
+condition:
+  - condition: template
+    value_template: >-
+      {{ states('sensor.sourdough_temperature') not in ['unknown', 'unavailable', 'none'] }}
+action:
+  - service: mqtt.publish
+    data:
+      topic: sourdough/sourdough/state
+      retain: true
+      payload: >
+        {
+          "humidity": {{ states('sensor.sourdough_humidity') | float(0) }},
+          "temp": {{ states('sensor.sourdough_temperature') | float(0) }},
+          "distance": {{ (states('sensor.sourdough_distance') | float(0) / 10) | round(0) }},
+          "battery": {{ states('sensor.sourdough_battery') | int(0) }},
+          "pressure": {{ states('sensor.sourdough_pressure') | float(0) }}
+        }
