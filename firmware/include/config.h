@@ -12,13 +12,28 @@
 #define DEVICE_NAME "sourdough"
 #endif
 
-// HC-SR04: speed of sound approx — microseconds to cm
-#ifndef US_TIMEOUT_US
-#define US_TIMEOUT_US 30000UL
-#endif
-
 #ifndef BME280_I2C_ADDR
 #define BME280_I2C_ADDR 0x76
+#endif
+
+// VL53L3CX default 7-bit address (many breakouts stay at 0x29)
+#ifndef VL53_I2C_ADDR
+#define VL53_I2C_ADDR 0x29
+#endif
+
+// Datasheet minimum ranging distance is 10 mm. Keep lid-to-dough above this
+// (recommend ≥ 30 mm mechanical clearance including cover glass / window).
+#ifndef VL53_MIN_RANGE_MM
+#define VL53_MIN_RANGE_MM 10
+#endif
+
+#ifndef VL53_MAX_RANGE_MM
+#define VL53_MAX_RANGE_MM 2000
+#endif
+
+// Timing budget for a single ranging (microseconds). 50–100 ms is typical.
+#ifndef VL53_TIMING_BUDGET_US
+#define VL53_TIMING_BUDGET_US 50000UL
 #endif
 
 // LiPo calibration (mV at the cell, after undoing the sense divider)
@@ -29,6 +44,5 @@
 #define VBAT_FULL_MV 4200.0f
 #endif
 
-// Optional high-side / low-side MOSFET gate for HC-SR04 VCC (active HIGH = powered).
-// Leave undefined to keep the module always powered (USB prototype).
-// #define PIN_US_PWR 17
+// Optional XSHUT (active LOW shutdown). Leave undefined if breakout pulls XSHUT high.
+// #define PIN_TOF_XSHUT 17

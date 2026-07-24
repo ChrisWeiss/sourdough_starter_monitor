@@ -4,19 +4,23 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_BME280.h>
+#include <PWFusion_VL53L3C.h>
 #include <math.h>
 
 static Adafruit_BME280 bme;
+static VL53L3C tof;
 static bool bme_ok = false;
+static bool tof_ok = false;
 
-static void ultrasonic_power(bool on) {
-#if defined(PIN_US_PWR)
-  digitalWrite(PIN_US_PWR, on ? HIGH : LOW);
-  if (on) {
-    delay(60); // HC-SR04 settle after VCC rise
+static void tof_xshut(bool enable_sensor) {
+#if defined(PIN_TOF_XSHUT)
+  // XSHUT is active-low shutdown on VL53L3CX
+  digitalWrite(PIN_TOF_XSHUT, enable_sensor ? HIGH : LOW);
+  if (enable_sensor) {
+    delay(2);
   }
 #else
-  (void)on;
+  (void)enable_sensor;
 #endif
 }
 
@@ -35,34 +39,48 @@ static void i2c_scan_log() {
   }
 }
 
-static long measure_distance_cm() {
-  ultrasonic_power(true);
-
-  digitalWrite(PIN_US_TRIG, LOW);
-  delayMicroseconds(2);
-  digitalWrite(PIN_US_TRIG, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(PIN_US_TRIG, LOW);
-
-  unsigned long duration = pulseIn(PIN_US_ECHO, HIGH, US_TIMEOUT_US);
-
-  ultrasonic_power(false);
-
-  if (duration == 0) {
+static long measure_distance_mm() {
+  if (!tof_ok) {
     return -1;
   }
-  // duration (us) / 58 ≈ cm
-  return static_cast<long>(duration / 58UL);
+
+  tof_xshut(true);
+  tof.startMeasurement();
+
+  const uint32_t deadline = millis() + 500;
+  while (!tof.dataIsReady()) {
+    if (static_cast<int32_t>(deadline - millis()) <= 0) {
+      tof.stopMeasurement();
+      return -1;
+    }
+    delay(1);
+  }
+
+  MeasurmentResult result{};
+  if (tof.getMeasurmentData(&result) != 0 || result.numObjs == 0) {
+    tof.stopMeasurement();
+    return -1;
+  }
+  tof.stopMeasurement();
+
+  // Prefer the nearest valid target (starter surface under the lid).
+  int16_t best = -1;
+  for (uint8_t i = 0; i < result.numObjs; i++) {
+    const int16_t mm = result.rangeData[i].Range;
+    if (mm < VL53_MIN_RANGE_MM || mm > VL53_MAX_RANGE_MM) {
+      continue;
+    }
+    if (best < 0 || mm < best) {
+      best = mm;
+    }
+  }
+  return best;
 }
 
 bool sensors_begin() {
-  pinMode(PIN_US_TRIG, OUTPUT);
-  pinMode(PIN_US_ECHO, INPUT);
-  digitalWrite(PIN_US_TRIG, LOW);
-
-#if defined(PIN_US_PWR)
-  pinMode(PIN_US_PWR, OUTPUT);
-  digitalWrite(PIN_US_PWR, LOW);
+#if defined(PIN_TOF_XSHUT)
+  pinMode(PIN_TOF_XSHUT, OUTPUT);
+  digitalWrite(PIN_TOF_XSHUT, HIGH);
 #endif
 
 #if defined(BOARD_ESP32)
@@ -70,13 +88,11 @@ bool sensors_begin() {
 #else
   Wire.begin();
 #endif
+  Wire.setClock(400000);
+
   bme_ok = bme.begin(BME280_I2C_ADDR, &Wire);
   if (!bme_ok) {
-    // Common alternate address
     bme_ok = bme.begin(0x77, &Wire);
-  }
-  if (!bme_ok) {
-    i2c_scan_log();
   }
   if (bme_ok) {
     bme.setSampling(Adafruit_BME280::MODE_FORCED,
@@ -86,7 +102,28 @@ bool sensors_begin() {
                     Adafruit_BME280::FILTER_OFF,
                     Adafruit_BME280::STANDBY_MS_1000);
   }
-  return bme_ok;
+
+  tof.begin(Wire);
+  // Short mode favors near-field linearity for jar-lid geometry.
+  if (tof.setDistanceMode(DIST_SHORT) == 0 &&
+      tof.setTimingBudget(VL53_TIMING_BUDGET_US) == 0) {
+    tof_ok = true;
+  } else {
+    tof_ok = false;
+  }
+
+  if (!bme_ok || !tof_ok) {
+    Serial.println(F("WARN: sensor init issue"));
+    if (!bme_ok) {
+      Serial.println(F("  BME280 not found"));
+    }
+    if (!tof_ok) {
+      Serial.println(F("  VL53L3CX not ready"));
+    }
+    i2c_scan_log();
+  }
+
+  return bme_ok; // climate is required for a useful node; ToF may recover later
 }
 
 SensorReading sensors_read() {
@@ -96,7 +133,7 @@ SensorReading sensors_read() {
   r.temperature_c = NAN;
   r.humidity_pct = NAN;
   r.pressure_hpa = NAN;
-  r.distance_cm = -1;
+  r.distance_mm = -1;
 
   if (bme_ok) {
     bme.takeForcedMeasurement();
@@ -106,9 +143,9 @@ SensorReading sensors_read() {
     r.climate_ok = !isnan(r.temperature_c) && !isnan(r.humidity_pct);
   }
 
-  long d = measure_distance_cm();
-  if (d >= 0 && d < 400) {
-    r.distance_cm = d;
+  long mm = measure_distance_mm();
+  if (mm >= VL53_MIN_RANGE_MM) {
+    r.distance_mm = mm;
     r.distance_ok = true;
   }
 

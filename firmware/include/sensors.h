@@ -6,7 +6,7 @@ struct SensorReading {
   float temperature_c;
   float humidity_pct;
   float pressure_hpa;
-  long distance_cm;
+  long distance_mm;
   bool climate_ok;
   bool distance_ok;
 };

@@ -26,8 +26,8 @@ void loop() {
   SensorReading r = sensors_read();
   uint8_t batt = power_battery_percent();
 
-  Serial.printf("temp=%.2fC hum=%.2f%% press=%.2fhPa dist=%ldcm batt=%u%%\n",
-                r.temperature_c, r.humidity_pct, r.pressure_hpa, r.distance_cm, batt);
+  Serial.printf("temp=%.2fC hum=%.2f%% press=%.2fhPa dist=%ldmm batt=%u%%\n",
+                r.temperature_c, r.humidity_pct, r.pressure_hpa, r.distance_mm, batt);
 
   uint8_t payload[24];
   size_t n = bthome_build_payload(payload, sizeof(payload), r, batt, packet_id++);

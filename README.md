@@ -1,6 +1,6 @@
 # Sourdough Starter Monitor (BLE / BTHome)
 
-Battery-oriented remake of [twilio/sourd.io](https://github.com/twilio/sourd.io): temperature, humidity, and rise (ultrasonic distance) for a sourdough starter jar.
+Battery-oriented remake of [twilio/sourd.io](https://github.com/twilio/sourd.io): temperature, humidity, and rise (**VL53L3CX ToF** distance) for a sourdough starter jar.
 
 Instead of Twilio Narrowband cellular, the jar node **advertises BTHome v2 over BLE**. Home Assistant ingests the readings; an automation republishes **sourd.io-style JSON** to your existing MQTT broker.
 
@@ -10,7 +10,7 @@ Instead of Twilio Narrowband cellular, the jar node **advertises BTHome v2 over 
 |------|-----------|------------|
 | MCU | Lolin / WeMos ESP32-WROOM DevKit | nRF52840 (Feather or XIAO) + LiPo |
 | Climate | BME280 (I2C) | same |
-| Distance | HC-SR04 (trig/echo; level-shift Echo) | 3.3V-tolerant ultrasonic or 5V boost + divider |
+| Distance | VL53L3CX ToF (I2C; ≥10 mm min range) | same; keep lid-to-dough ≥ ~30 mm |
 | Enclosure | Bench wiring | sourd.io v2.5 jar stack + remixed lid insert |
 
 See [docs/wiring.md](docs/wiring.md) (WireViz assembly diagrams) and [docs/bringup.md](docs/bringup.md). Regenerate diagrams with `./scripts/render_wiring.sh`.

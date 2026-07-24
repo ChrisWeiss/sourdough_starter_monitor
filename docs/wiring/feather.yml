@@ -1,64 +1,59 @@
 # Assembly wiring — Adafruit Feather nRF52840
 # Pins match firmware/platformio.ini env:nrf52840 (PIN_*).
-# No 5V rail: use 3.3V-tolerant ultrasonic, or boost + Echo divider (see wiring.md).
 
 metadata:
   title: Feather nRF52840 assembly wiring
-  description: BME280 I2C + ultrasonic (3.3V Echo required)
+  description: BME280 + VL53L3CX on shared I2C
 
 connectors:
   MCU:
     type: Adafruit Feather nRF52840
     subtype: Express
-    pinlabels: [3V3, GND, SDA_25, SCL_26, P27, P7, US_PWR]
-    notes: PIN_BME_SDA=25 PIN_BME_SCL=26 PIN_US_TRIG=27 PIN_US_ECHO=7; US_PWR optional MOSFET (PIN_US_PWR)
+    pinlabels: [3V3, GND, SDA_25, SCL_26]
+    notes: PIN_BME_SDA=25 PIN_BME_SCL=26; optional PIN_TOF_XSHUT
   BME280:
     type: BME280
     subtype: I2C module
     pinlabels: [VCC, GND, SDA, SCL]
     notes: 3.3V I2C; Wire.begin() board defaults
-  US:
-    type: Ultrasonic
-    subtype: HC-SR04 / RCWL-1601 / AJ-SR04M
-    pinlabels: [VCC, GND, Trig, Echo]
-    notes: Echo must be ≤ 3.3V; prefer 3.3V-tolerant module
+  VL53:
+    type: VL53L3CX
+    subtype: ToF module
+    pinlabels: [VCC, GND, SDA, SCL]
+    notes: 3.3V I2C addr 0x29; min range 10 mm
 
 cables:
   BME_PWR:
     gauge: 24 AWG
     length: 0.12
     colors: [RD, BK]
-    notes: BME280 power (3.3V)
-  BME_I2C:
-    gauge: 24 AWG
-    length: 0.12
-    colors: [BU, YE]
-    notes: SDA / SCL
-  US_PWR:
+  TOF_PWR:
     gauge: 24 AWG
     length: 0.12
     colors: [RD, BK]
-    notes: Sensor VCC from 3V3 or gated MOSFET out (US_PWR)
-  US_SIG:
+  I2C_BME:
     gauge: 24 AWG
     length: 0.12
-    colors: [GN, WH]
-    notes: Trig / Echo (Echo ≤ 3.3V)
+    colors: [BU, YE]
+  I2C_TOF:
+    gauge: 24 AWG
+    length: 0.12
+    colors: [BU, YE]
 
 connections:
   - # BME280 power
     - MCU: [1, 2]
     - BME_PWR: [1-2]
     - BME280: [1, 2]
+  - # VL53 power
+    - MCU: [1, 2]
+    - TOF_PWR: [1-2]
+    - VL53: [1, 2]
   - # BME280 I2C
     - MCU: [3, 4]
-    - BME_I2C: [1-2]
+    - I2C_BME: [1-2]
     - BME280: [3, 4]
-  - # Ultrasonic power (3V3 or MOSFET-gated)
-    - MCU: [7, 2]
-    - US_PWR: [1-2]
-    - US: [1, 2]
-  - # Trig + Echo
-    - MCU: [5, 6]
-    - US_SIG: [1-2]
-    - US: [3, 4]
+  - # VL53 I2C
+    - MCU: [3, 4]
+    - I2C_TOF: [1-2]
+    - VL53: [3, 4]

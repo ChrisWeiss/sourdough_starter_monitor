@@ -14,9 +14,9 @@ Firmware uses **System ON low-power idle** (`NRF_POWER_MODE_LOWPWR` + `waitForEv
 
 Enable SoftDevice DCDC when supported. Keep the BME280 in forced mode (already configured).
 
-### Ultrasonic power gating
+### ToF (VL53L3CX) power
 
-HC-SR04 draws ~15 mA while powered. Define `PIN_US_PWR` to a GPIO that drives a P- or N-MOSFET / load switch so VCC is only present during a ping (`sensors.cpp` settles ~60 ms after enable).
+The VL53L3CX is a 3.3 V I2C device. Optional `PIN_TOF_XSHUT` drives the active-low XSHUT pin for hardware standby between samples.
 
 ### True System OFF
 
@@ -41,4 +41,4 @@ Override `-D VBAT_EMPTY_MV=…` / `-D VBAT_FULL_MV=…` if your divider or ADC s
 | `nrf52840` | Adafruit Feather nRF52840 Express |
 | `nrf52840-xiao` | XIAO pin map (Adafruit SoftDevice BSP build; flash via XIAO UF2 / Seeed tools) |
 
-Adjust `PIN_*` in `platformio.ini` for your wiring. For HC-SR04 on 3.3 V-only boards see [wiring.md](wiring.md).
+Adjust `PIN_*` in `platformio.ini` for your wiring. See [wiring.md](wiring.md).

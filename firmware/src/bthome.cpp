@@ -68,8 +68,8 @@ size_t bthome_build_payload(uint8_t *out, size_t out_len, const SensorReading &r
     }
   }
 
-  if (r.distance_ok) {
-    uint16_t mm = static_cast<uint16_t>(r.distance_cm * 10);
+  if (r.distance_ok && r.distance_mm >= 0) {
+    uint16_t mm = static_cast<uint16_t>(r.distance_mm > 65535 ? 65535 : r.distance_mm);
     out[i++] = OID_DISTANCE_MM;
     write_le16u(&out[i], mm);
     i += 2;

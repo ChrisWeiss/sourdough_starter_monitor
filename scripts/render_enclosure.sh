@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SCAD="$ROOT/enclosure/adapter/lid_insert_hc_sr04_bme280.scad"
+SCAD="$ROOT/enclosure/adapter/lid_insert_vl53l3cx_bme280.scad"
 OUT_DIR="$ROOT/enclosure/adapter"
 
 OPENSCAD=""
@@ -32,7 +32,7 @@ if [[ "$OPENSCAD" == /Applications/* ]]; then
 fi
 
 echo "==> Rendering lid_insert → STL"
-"$OPENSCAD" -o "$OUT_DIR/lid_insert_hc_sr04_bme280.stl" \
+"$OPENSCAD" -o "$OUT_DIR/lid_insert_vl53l3cx_bme280.stl" \
   -D 'PART="lid_insert"' "$SCAD"
 
 echo "==> Rendering board_adapter → STL"

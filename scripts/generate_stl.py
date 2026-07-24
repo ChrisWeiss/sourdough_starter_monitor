@@ -110,14 +110,14 @@ def board_adapter_tris() -> list:
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    lid = OUT / "lid_insert_hc_sr04_bme280.stl"
+    lid = OUT / "lid_insert_vl53l3cx_bme280.stl"
     board = OUT / "board_adapter_nrf52840.stl"
     write_binary_stl(lid, lid_insert_tris())
     write_binary_stl(board, board_adapter_tris())
     print(f"Wrote {lid} ({lid.stat().st_size} bytes)")
     print(f"Wrote {board} ({board.stat().st_size} bytes)")
     print(
-        "Note: Python fallback omits CSG transducer/BME cutouts. "
+        "Note: Python fallback omits CSG ToF/BME cutouts. "
         "Prefer OpenSCAD render via scripts/render_enclosure.sh when available."
     )
 

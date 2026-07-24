@@ -12,13 +12,13 @@ STL files in [`v2.5/`](v2.5/) are from [twilio/sourd.io](https://github.com/twil
 
 ## Remix for this project
 
-Original insert cutouts are Grove-shaped. This project uses **HC-SR04** + **BME280**.
+This project uses **VL53L3CX** (optical window) + **BME280**.
 
-OpenSCAD source: [`adapter/lid_insert_hc_sr04_bme280.scad`](adapter/lid_insert_hc_sr04_bme280.scad)
+OpenSCAD source: [`adapter/lid_insert_vl53l3cx_bme280.scad`](adapter/lid_insert_vl53l3cx_bme280.scad)
 
-| Rendered STL | Role |
-|--------------|------|
-| [`adapter/lid_insert_hc_sr04_bme280.stl`](adapter/lid_insert_hc_sr04_bme280.stl) | Dual transducer holes + BME280 vent on a ~70 mm disk |
+| Output | Role |
+|--------|------|
+| [`adapter/lid_insert_vl53l3cx_bme280.stl`](adapter/lid_insert_vl53l3cx_bme280.stl) | ToF aperture + BME280 vent on a ~70 mm disk |
 | [`adapter/board_adapter_nrf52840.stl`](adapter/board_adapter_nrf52840.stl) | Shallow pocket for Feather / XIAO-sized nRF52840 |
 
 Render both STLs (or re-tune after measuring your modules):
@@ -29,4 +29,4 @@ Render both STLs (or re-tune after measuring your modules):
 
 In the OpenSCAD GUI, use **Customizer → Part** (or edit `PART` at the top of the `.scad`) to switch between `lid_insert` and `board_adapter` for preview. CLI/`render_enclosure.sh` pass `-D PART=…` so both STLs still export without editing the file.
 
-Tune `us_hole_d`, `us_spacing`, and board pocket dimensions in the `.scad` before printing. Fit-check against a Ball jar lid and the vendored v2.5 stack before committing to a long print.
+Tune `tof_window_d` and board pocket dimensions in the `.scad` before printing. Keep the dough surface **≥ 10 mm** from the sensor (prefer ≥ 30 mm). Fit-check against a Ball jar lid and the vendored v2.5 stack before committing to a long print.
