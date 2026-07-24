@@ -6,7 +6,7 @@ Pin tables below stay aligned with `PIN_*` in `firmware/platformio.ini`.
 
 ## Prototype — Lolin / WeMos ESP32-WROOM
 
-![ESP32 assembly wiring](wiring/generated/esp32.svg)
+<img src="wiring/generated/esp32.svg" alt="ESP32 assembly wiring" width="100%" />
 
 | Signal        | ESP32 GPIO | Notes                                      |
 |---------------|------------|--------------------------------------------|
@@ -29,7 +29,7 @@ Bring-up steps: [bringup.md](bringup.md).
 
 ### Adafruit Feather (`env:nrf52840`)
 
-![Feather nRF52840 assembly wiring](wiring/generated/feather.svg)
+<img src="wiring/generated/feather.svg" alt="Feather nRF52840 assembly wiring" width="100%" />
 
 | Signal        | Feather pin | Notes                                      |
 |---------------|-------------|--------------------------------------------|
@@ -41,7 +41,7 @@ Bring-up steps: [bringup.md](bringup.md).
 
 ### Seeed XIAO nRF52840 (`env:nrf52840-xiao`)
 
-![XIAO nRF52840 assembly wiring](wiring/generated/xiao.svg)
+<img src="wiring/generated/xiao.svg" alt="XIAO nRF52840 assembly wiring" width="100%" />
 
 | Signal        | XIAO pin | Notes                          |
 |---------------|----------|--------------------------------|

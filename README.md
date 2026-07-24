@@ -17,9 +17,12 @@ See [docs/wiring.md](docs/wiring.md) (WireViz assembly diagrams) and [docs/bring
 
 ## Firmware
 
-PlatformIO project in [`firmware/`](firmware/):
+PlatformIO project in [`firmware/`](firmware/). Use the project virtualenv (PlatformIO + WireViz):
 
 ```bash
+./scripts/setup_venv.sh
+source .venv/bin/activate
+
 # One-shot build + flash + monitor (auto-detects USB serial)
 ./scripts/bringup_esp32.sh
 

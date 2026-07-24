@@ -21,10 +21,12 @@ OpenSCAD source: [`adapter/lid_insert_hc_sr04_bme280.scad`](adapter/lid_insert_h
 | [`adapter/lid_insert_hc_sr04_bme280.stl`](adapter/lid_insert_hc_sr04_bme280.stl) | Dual transducer holes + BME280 vent on a ~70 mm disk |
 | [`adapter/board_adapter_nrf52840.stl`](adapter/board_adapter_nrf52840.stl) | Shallow pocket for Feather / XIAO-sized nRF52840 |
 
-Render (or re-tune after measuring your modules):
+Render both STLs (or re-tune after measuring your modules):
 
 ```bash
 ./scripts/render_enclosure.sh
 ```
+
+In the OpenSCAD GUI, use **Customizer → Part** (or edit `PART` at the top of the `.scad`) to switch between `lid_insert` and `board_adapter` for preview. CLI/`render_enclosure.sh` pass `-D PART=…` so both STLs still export without editing the file.
 
 Tune `us_hole_d`, `us_spacing`, and board pocket dimensions in the `.scad` before printing. Fit-check against a Ball jar lid and the vendored v2.5 stack before committing to a long print.

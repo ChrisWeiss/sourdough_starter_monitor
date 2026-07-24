@@ -1,0 +1,3 @@
+# Python deps for regenerating WireViz assembly diagrams (docs/wiring/).
+# System GraphViz is also required: brew install graphviz
+wireviz==0.4.1

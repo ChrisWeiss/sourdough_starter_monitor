@@ -1,0 +1,5 @@
+# Project tooling (PlatformIO firmware + WireViz diagrams)
+#   python3 -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt
+platformio>=6.1.18,<7
+-r docs/wiring/requirements.txt

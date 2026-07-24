@@ -1,0 +1,8 @@
+# Shared WireViz layout: narrower diagrams for markdown/mobile.
+# Prepended by scripts/render_wiring.sh (-p).
+tweak:
+  override:
+    graph:
+      rankdir: TB
+      ranksep: "0.75"
+      nodesep: "0.3"

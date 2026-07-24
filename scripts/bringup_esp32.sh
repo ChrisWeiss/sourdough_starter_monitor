@@ -6,7 +6,6 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 FW="$ROOT/firmware"
 ENV_NAME="lolin-esp32"
-PIO="${PIO:-$HOME/.platformio/penv/bin/pio}"
 PORT=""
 
 while [[ $# -gt 0 ]]; do
@@ -16,14 +15,30 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ ! -x "$PIO" ]]; then
-  if command -v pio >/dev/null 2>&1; then
-    PIO="$(command -v pio)"
-  else
-    echo "PlatformIO not found at $HOME/.platformio/penv/bin/pio" >&2
-    exit 1
+resolve_pio() {
+  if [[ -n "${PIO:-}" && -x "$PIO" ]]; then
+    echo "$PIO"
+    return
   fi
-fi
+  for candidate in \
+    "$ROOT/.venv/bin/pio" \
+    "$HOME/.platformio/penv/bin/pio"; do
+    if [[ -x "$candidate" ]]; then
+      echo "$candidate"
+      return
+    fi
+  done
+  if command -v pio >/dev/null 2>&1; then
+    command -v pio
+    return
+  fi
+  echo "PlatformIO not found. Create the project venv first:" >&2
+  echo "  ./scripts/setup_venv.sh" >&2
+  echo "  source .venv/bin/activate" >&2
+  exit 1
+}
+
+PIO="$(resolve_pio)"
 
 echo "==> Building $ENV_NAME"
 (cd "$FW" && "$PIO" run -e "$ENV_NAME")
