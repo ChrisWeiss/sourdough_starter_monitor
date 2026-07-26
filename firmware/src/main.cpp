@@ -9,12 +9,17 @@ static uint8_t packet_id = 0;
 
 void setup() {
   Serial.begin(115200);
-  delay(200);
+  // USB CDC on nRF: wait briefly so boot diagnostics are visible.
+  uint32_t wait_until = millis() + 3000;
+  while (!Serial && static_cast<int32_t>(wait_until - millis()) > 0) {
+    delay(10);
+  }
+  delay(50);
   Serial.println();
   Serial.println(F("sourdough BTHome monitor"));
 
   if (!sensors_begin()) {
-    Serial.println(F("WARN: BME280 not found — climate fields will be omitted"));
+    Serial.println(F("WARN: climate sensor not found — temp/pressure omitted"));
   }
 
   if (!bthome_advertise_begin(DEVICE_NAME)) {
@@ -26,8 +31,14 @@ void loop() {
   SensorReading r = sensors_read();
   uint8_t batt = power_battery_percent();
 
-  Serial.printf("temp=%.2fC hum=%.2f%% press=%.2fhPa dist=%ldmm batt=%u%%\n",
-                r.temperature_c, r.humidity_pct, r.pressure_hpa, r.distance_mm, batt);
+  Serial.printf("temp=%.2fC hum=", r.temperature_c);
+  if (r.humidity_ok) {
+    Serial.printf("%.2f%%", r.humidity_pct);
+  } else {
+    Serial.print(F("n/a"));
+  }
+  Serial.printf(" press=%.2fhPa dist=%ldmm batt=%u%%\n",
+                r.pressure_hpa, r.distance_mm, batt);
 
   uint8_t payload[24];
   size_t n = bthome_build_payload(payload, sizeof(payload), r, batt, packet_id++);

@@ -7,7 +7,8 @@ struct SensorReading {
   float humidity_pct;
   float pressure_hpa;
   long distance_mm;
-  bool climate_ok;
+  bool climate_ok;   // temperature available (BME280 or BMP280)
+  bool humidity_ok;  // humidity available (BME280 only)
   bool distance_ok;
 };
 

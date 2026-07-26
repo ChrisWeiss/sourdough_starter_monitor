@@ -54,7 +54,7 @@ void power_system_off() {
 }
 
 uint8_t power_battery_percent() {
-#if defined(PIN_VBAT)
+#if defined(PIN_VBAT) && !defined(BOARD_NO_VBAT)
   // Feather nRF52840: VBAT sense is typically 2× attenuated into ADC.
   float mv = analogRead(PIN_VBAT) * 2.0f * 3600.0f / 1024.0f;
   float pct = (mv - VBAT_EMPTY_MV) / (VBAT_FULL_MV - VBAT_EMPTY_MV) * 100.0f;

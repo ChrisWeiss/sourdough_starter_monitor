@@ -59,7 +59,7 @@ fi
 if [[ -z "$PORT" ]]; then
   echo ""
   echo "No ESP32 serial port detected."
-  echo "Wire BME280 + VL53L3CX on I2C (see docs/wiring.md + docs/bringup.md),"
+  echo "Wire BME280 + VL53L1X on I2C (see docs/wiring.md + docs/bringup.md),"
   echo "plug in the Lolin USB cable, then re-run:"
   echo "  $0 --port /dev/cu.usbserial-XXXX"
   exit 3

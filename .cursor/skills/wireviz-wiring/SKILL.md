@@ -23,17 +23,17 @@ Pins must match `PIN_*` in `firmware/platformio.ini`.
 
 ## When changing pins
 
-1. Edit the matching YAML (`esp32.yml`, `feather.yml`, or `xiao.yml`).
+1. Edit the matching YAML (`esp32.yml`, `feather.yml`, `xiao.yml`, or `promicro.yml`).
 2. Update the pin table in `docs/wiring.md`.
 3. Update `PIN_*` in `firmware/platformio.ini` if firmware changed.
 4. Run `./scripts/render_wiring.sh`.
 5. Commit YAML + regenerated SVG together.
 
-## Shared I2C (BME280 + VL53L3CX)
+## Shared I2C (BME280 + ToF)
 
 Both sensors are 3.3 V I2C on the same SDA/SCL. Model two power cables and two I2C cables from the same MCU pins (WireViz has no native bus tee).
 
-Default addresses: BME280 `0x76`/`0x77`, VL53L3CX `0x29`.
+Default addresses: BME280 `0x76`/`0x77`, VL53L1X / VL53L3CX `0x29`.
 
 ## Deps
 

@@ -12,7 +12,7 @@ STL files in [`v2.5/`](v2.5/) are from [twilio/sourd.io](https://github.com/twil
 
 ## Remix for this project
 
-This project uses **VL53L3CX** (optical window) + **BME280**.
+This project uses **VL53L1X** (optical window) + **BME280/BMP280**. (OpenSCAD/STL filenames still say `vl53l3cx` for historical reasons.)
 
 OpenSCAD source: [`adapter/lid_insert_vl53l3cx_bme280.scad`](adapter/lid_insert_vl53l3cx_bme280.scad)
 

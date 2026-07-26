@@ -1,17 +1,17 @@
-# Assembly wiring — Lolin / WeMos ESP32-WROOM prototype
-# Pins match firmware/platformio.ini env:lolin-esp32 (PIN_*).
+# Assembly wiring — Pro Micro / SuperMini nRF52840 (nice!nano-compatible)
+# Pins match firmware/platformio.ini env:nrf52840-promicro (PIN_*).
 # BME280 + VL53L1X share the I2C bus (3.3V only).
 
 metadata:
-  title: ESP32 prototype assembly wiring
+  title: Pro Micro nRF52840 assembly wiring
   description: BME280 + VL53L1X on shared I2C
 
 connectors:
   MCU:
-    type: Lolin / WeMos ESP32-WROOM
-    subtype: DevKit
-    pinlabels: [3V3, GND, GPIO21, GPIO22]
-    notes: PIN_BME_SDA=21 PIN_BME_SCL=22; optional PIN_TOF_XSHUT
+    type: Pro Micro / SuperMini nRF52840
+    subtype: nice!nano-compatible
+    pinlabels: [VCC, GND, 017_SDA, 020_SCL]
+    notes: silkscreen 017/020 = P0.17/P0.20; firmware PIN_BME_SDA=29 PIN_BME_SCL=28 (Feather BSP)
   BME280:
     type: BME280
     subtype: I2C module
@@ -21,27 +21,27 @@ connectors:
     type: VL53L1X
     subtype: ToF module
     pinlabels: [VCC, GND, SDA, SCL]
-    notes: 3.3V I2C addr 0x29; keep lid-to-dough ≥ 10 mm (prefer ≥ 30 mm)
+    notes: 3.3V I2C addr 0x29; keep lid-to-dough ≥ ~30 mm
 
 cables:
   BME_PWR:
     gauge: 24 AWG
-    length: 0.12
+    length: 0.10
     colors: [RD, BK]
     notes: BME280 power (3.3V)
   TOF_PWR:
     gauge: 24 AWG
-    length: 0.12
+    length: 0.10
     colors: [RD, BK]
     notes: VL53L1X power (3.3V)
   I2C_BME:
     gauge: 24 AWG
-    length: 0.12
+    length: 0.10
     colors: [BU, YE]
     notes: Shared I2C to BME280
   I2C_TOF:
     gauge: 24 AWG
-    length: 0.12
+    length: 0.10
     colors: [BU, YE]
     notes: Shared I2C to VL53L1X
 

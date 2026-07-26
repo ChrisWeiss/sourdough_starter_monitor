@@ -1,6 +1,6 @@
 # Sourdough Starter Monitor (BLE / BTHome)
 
-Battery-oriented remake of [twilio/sourd.io](https://github.com/twilio/sourd.io): temperature, humidity, and rise (**VL53L3CX ToF** distance) for a sourdough starter jar.
+Battery-oriented remake of [twilio/sourd.io](https://github.com/twilio/sourd.io): temperature, humidity, and rise (**VL53L1X ToF** distance) for a sourdough starter jar.
 
 Instead of Twilio Narrowband cellular, the jar node **advertises BTHome v2 over BLE**. Home Assistant ingests the readings; an automation republishes **sourd.io-style JSON** to your existing MQTT broker.
 
@@ -8,9 +8,9 @@ Instead of Twilio Narrowband cellular, the jar node **advertises BTHome v2 over 
 
 | Role | Prototype | Production |
 |------|-----------|------------|
-| MCU | Lolin / WeMos ESP32-WROOM DevKit | nRF52840 (Feather or XIAO) + LiPo |
-| Climate | BME280 (I2C) | same |
-| Distance | VL53L3CX ToF (I2C; ≥10 mm min range) | same; keep lid-to-dough ≥ ~30 mm |
+| MCU | Lolin / WeMos ESP32-WROOM DevKit | nRF52840 (Pro Micro / SuperMini, Feather, or XIAO) + LiPo |
+| Climate | BMP280/BME280 (I2C) | same (BMP280: no humidity) |
+| Distance | VL53L1X ToF (I2C) | same; keep lid-to-dough ≥ ~30–40 mm |
 | Enclosure | Bench wiring | sourd.io v2.5 jar stack + remixed lid insert |
 
 See [docs/wiring.md](docs/wiring.md) (WireViz assembly diagrams) and [docs/bringup.md](docs/bringup.md). Regenerate diagrams with `./scripts/render_wiring.sh`.
@@ -24,15 +24,17 @@ PlatformIO project in [`firmware/`](firmware/). Use the project virtualenv (Plat
 source .venv/bin/activate
 
 # One-shot build + flash + monitor (auto-detects USB serial)
-./scripts/bringup_esp32.sh
+./scripts/bringup_esp32.sh          # Lolin ESP32 prototype
+./scripts/bringup_nrf52840.sh       # Pro Micro nRF52840 (default)
 
 cd firmware
 pio run -e lolin-esp32          # build prototype
 pio run -e nrf52840             # Adafruit Feather
 pio run -e nrf52840-xiao        # Seeed XIAO nRF52840
+pio run -e nrf52840-promicro    # Pro Micro / SuperMini nRF52840
 ```
 
-Duty cycle: wake → read sensors → advertise ~1.5 s → sleep (default **90 s**, `SAMPLE_INTERVAL_SEC`).
+Duty cycle: wake → read sensors → advertise ~1.5 s → sleep (**90 s** on all envs, `SAMPLE_INTERVAL_SEC`).
 
 ## Home Assistant + MQTT
 

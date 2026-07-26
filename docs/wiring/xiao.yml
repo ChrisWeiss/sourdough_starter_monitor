@@ -3,7 +3,7 @@
 
 metadata:
   title: XIAO nRF52840 assembly wiring
-  description: BME280 + VL53L3CX on shared I2C
+  description: BME280 + VL53L1X on shared I2C
 
 connectors:
   MCU:
@@ -17,7 +17,7 @@ connectors:
     pinlabels: [VCC, GND, SDA, SCL]
     notes: 3.3V I2C; address 0x76 or 0x77
   VL53:
-    type: VL53L3CX
+    type: VL53L1X
     subtype: ToF module
     pinlabels: [VCC, GND, SDA, SCL]
     notes: 3.3V I2C addr 0x29; min range 10 mm

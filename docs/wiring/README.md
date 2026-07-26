@@ -25,7 +25,7 @@ Or let `./scripts/render_wiring.sh` create `.venv` from the repo-root [`requirem
 ./scripts/render_wiring.sh
 ```
 
-Creates `.venv` if needed, then writes `docs/wiring/generated/{esp32,feather,xiao}.svg`.
+Creates `.venv` if needed, then writes `docs/wiring/generated/{esp32,feather,xiao,promicro}.svg`.
 
 Layout is controlled by [`_layout.yml`](_layout.yml) (prepended on every render): GraphViz `rankdir=TB` for a taller/narrower harness instead of WireViz’s default left-to-right. Adjust `ranksep` / `nodesep` there if needed.
 

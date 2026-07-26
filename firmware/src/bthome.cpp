@@ -49,23 +49,25 @@ size_t bthome_build_payload(uint8_t *out, size_t out_len, const SensorReading &r
   out[i++] = OID_BATTERY;
   out[i++] = battery_pct > 100 ? 100 : battery_pct;
 
-  if (r.climate_ok) {
+  if (r.climate_ok && !isnan(r.temperature_c)) {
     int16_t t = static_cast<int16_t>(lroundf(r.temperature_c * 100.0f));
     out[i++] = OID_TEMP;
     write_le16(&out[i], t);
     i += 2;
+  }
 
+  if (r.humidity_ok && !isnan(r.humidity_pct)) {
     uint16_t h = static_cast<uint16_t>(lroundf(r.humidity_pct * 100.0f));
     out[i++] = OID_HUMIDITY;
     write_le16u(&out[i], h);
     i += 2;
+  }
 
-    if (!isnan(r.pressure_hpa)) {
-      uint32_t p = static_cast<uint32_t>(lroundf(r.pressure_hpa * 100.0f));
-      out[i++] = OID_PRESSURE;
-      write_le24u(&out[i], p);
-      i += 3;
-    }
+  if (r.climate_ok && !isnan(r.pressure_hpa)) {
+    uint32_t p = static_cast<uint32_t>(lroundf(r.pressure_hpa * 100.0f));
+    out[i++] = OID_PRESSURE;
+    write_le24u(&out[i], p);
+    i += 3;
   }
 
   if (r.distance_ok && r.distance_mm >= 0) {
@@ -134,8 +136,13 @@ bool bthome_advertise(const uint8_t *payload, size_t payload_len) {
 
   Bluefruit.Advertising.stop();
   Bluefruit.Advertising.clearData();
+  Bluefruit.ScanResponse.clearData();
+
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
-  Bluefruit.Advertising.addName();
+
+  // Keep the primary ADV under 31 bytes: name goes in the scan response so
+  // temp+pressure+distance service data still fits.
+  Bluefruit.ScanResponse.addName();
 
   // Service data: 16-bit UUID FCD2 + payload
   uint8_t svc[2 + 27];

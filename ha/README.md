@@ -15,21 +15,25 @@ After discovery, adjust these entity IDs to match your install (Developer Tools 
 | Reading   | Typical entity                          |
 |-----------|-----------------------------------------|
 | Temp      | `sensor.sourdough_temperature`          |
-| Humidity  | `sensor.sourdough_humidity`             |
-| Distance  | `sensor.sourdough_distance`             |
+| Humidity  | `sensor.sourdough_humidity` (BME280 only; absent with BMP280) |
+| Distance  | `sensor.sourdough_distance` — set unit to **mm** in entity settings |
 | Battery   | `sensor.sourdough_battery`              |
-| Pressure  | `sensor.sourdough_pressure` (optional)  |
+| Pressure  | `sensor.sourdough_pressure`             |
 
-Distance is advertised in **mm**; convert to cm in the payload to match sourd.io.
+Firmware advertises BTHome object `0x40` (millimetres). Home Assistant may convert that to inches when your profile uses US customary units, which looks like “1 inch resolution.” Override the entity unit to **mm** (entity cog → Unit of measurement).
+
+Distance in MQTT: `distance_mm` (preferred) plus legacy `distance` in cm for older sourd.io-style consumers.
 
 ## MQTT topic
 
 - Topic: `sourdough/sourdough/state`
-- Payload example:
+- Payload example (BMP280 — no humidity):
 
 ```json
-{"humidity":55.20,"temp":24.50,"distance":12,"battery":97,"pressure":1013.25}
+{"humidity":null,"temp":24.50,"distance_mm":192,"distance":19,"battery":97,"pressure":1013.25}
 ```
+
+With a BME280, `humidity` is a number instead of `null`.
 
 Replace the middle path segment with a stable device id if you run more than one jar.
 

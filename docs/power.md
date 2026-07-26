@@ -14,9 +14,9 @@ Firmware uses **System ON low-power idle** (`NRF_POWER_MODE_LOWPWR` + `waitForEv
 
 Enable SoftDevice DCDC when supported. Keep the BME280 in forced mode (already configured).
 
-### ToF (VL53L3CX) power
+### ToF (VL53L1X) power
 
-The VL53L3CX is a 3.3 V I2C device. Optional `PIN_TOF_XSHUT` drives the active-low XSHUT pin for hardware standby between samples.
+The VL53L1X is a 3.3 V I2C device. Firmware starts ranging only for each sample burst, then `stopRanging()` before sleep. Optional `PIN_TOF_XSHUT` drives the active-low XSHUT pin for hardware standby between samples.
 
 ### True System OFF
 

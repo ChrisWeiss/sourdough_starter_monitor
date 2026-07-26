@@ -1,12 +1,17 @@
-# Republish BTHome sourdough readings to MQTT (sourd.io-compatible JSON)
+# Republish BTHome sourdough readings to MQTT
 # Reference copy — prefer installing via Home Assistant UI / config API.
 # Adjust entity_id values after HA discovers the BTHome device.
+#
+# Distance is published in millimetres. In HA, set the distance entity's
+# unit of measurement to mm (entity cog → Unit of measurement) so the state
+# is not converted to inches before this automation runs.
+# BMP280 builds have no humidity entity — payload uses null for humidity.
 
 alias: Sourdough BTHome → MQTT
 id: sourdough_bthome_mqtt_republish
 description: >-
   Mirror BTHome sourdough climate/distance/battery entities to MQTT as
-  sourd.io-shaped JSON for existing broker consumers.
+  JSON (distance in mm) for local consumers.
 mode: queued
 max: 5
 triggers:
@@ -16,6 +21,7 @@ triggers:
       - sensor.sourdough_humidity
       - sensor.sourdough_distance
       - sensor.sourdough_battery
+      - sensor.sourdough_pressure
 conditions:
   - condition: not
     conditions:
@@ -31,10 +37,26 @@ actions:
       topic: sourdough/sourdough/state
       retain: true
       payload: >
+        {% set u = state_attr('sensor.sourdough_distance', 'unit_of_measurement') %}
+        {% set d = states('sensor.sourdough_distance') | float(0) %}
+        {% if u == 'mm' %}
+          {% set dist_mm = d %}
+        {% elif u == 'cm' %}
+          {% set dist_mm = d * 10 %}
+        {% elif u == 'm' %}
+          {% set dist_mm = d * 1000 %}
+        {% elif u in ['in', '"'] %}
+          {% set dist_mm = d * 25.4 %}
+        {% elif u == 'ft' %}
+          {% set dist_mm = d * 304.8 %}
+        {% else %}
+          {% set dist_mm = d %}
+        {% endif %}
         {
-          "humidity": {{ states('sensor.sourdough_humidity') | float(0) }},
+          "humidity": {% set h = states('sensor.sourdough_humidity') %}{% if h not in ['unknown', 'unavailable', 'none'] %}{{ h | float }}{% else %}null{% endif %},
           "temp": {{ states('sensor.sourdough_temperature') | float(0) }},
-          "distance": {{ (states('sensor.sourdough_distance') | float(0) / 10) | round(0) }},
+          "distance_mm": {{ dist_mm | round(0) }},
+          "distance": {{ (dist_mm / 10) | round(0) }},
           "battery": {{ states('sensor.sourdough_battery') | int(0) }},
-          "pressure": {{ states('sensor.sourdough_pressure') | float(0) }}
+          "pressure": {% set p = states('sensor.sourdough_pressure') %}{% if p not in ['unknown', 'unavailable', 'none'] %}{{ p | float }}{% else %}null{% endif %}
         }

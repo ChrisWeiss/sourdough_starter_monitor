@@ -4,7 +4,7 @@ Assembly diagrams are generated with [WireViz](https://github.com/wireviz/WireVi
 
 Pin tables below stay aligned with `PIN_*` in `firmware/platformio.ini`.
 
-**Distance sensor:** VL53L3CX ToF (I2C). Datasheet minimum range is **10 mm**; keep lid-to-dough clearance above that (recommend **≥ 30 mm** including window/foam). Needs a clear optical path through the lid (not ultrasonic holes).
+**Distance sensor:** VL53L1X ToF (I2C). Keep lid-to-dough clearance **≥ ~30–40 mm** including window/foam. Needs a clear optical path through the lid (not ultrasonic holes).
 
 ## Prototype — Lolin / WeMos ESP32-WROOM
 
@@ -16,11 +16,11 @@ Pin tables below stay aligned with `PIN_*` in `firmware/platformio.ini`.
 | BME280 SCL    | 22         |                                            |
 | BME280 VCC    | 3V3        |                                            |
 | BME280 GND    | GND        |                                            |
-| VL53L3CX SDA  | 21         | Same bus; address `0x29`                   |
-| VL53L3CX SCL  | 22         |                                            |
-| VL53L3CX VCC  | 3V3        |                                            |
-| VL53L3CX GND  | GND        |                                            |
-| VL53L3CX XSHUT| (optional) | Active-low shutdown; leave pulled up if unused |
+| VL53L1X SDA   | 21         | Same bus; address `0x29`                   |
+| VL53L1X SCL   | 22         |                                            |
+| VL53L1X VCC   | 3V3        |                                            |
+| VL53L1X GND   | GND        |                                            |
+| VL53L1X XSHUT | (optional) | Active-low shutdown; leave pulled up if unused |
 
 Override pins in `platformio.ini` `build_flags` (`PIN_BME_*`, optional `PIN_TOF_XSHUT`).
 
@@ -28,13 +28,27 @@ Bring-up steps: [bringup.md](bringup.md).
 
 ## Production — nRF52840
 
+### Pro Micro / SuperMini (`env:nrf52840-promicro`)
+
+nice!nano-compatible Pro Micro footprint (silkscreen `017` / `020` = P0.17 / P0.20).
+
+![Pro Micro nRF52840 assembly wiring](wiring/generated/promicro.svg)
+
+| Signal        | Board pin     | Notes                                      |
+|---------------|---------------|--------------------------------------------|
+| Shared SDA    | 017 (P0.17)   | BME280 + VL53L1X; firmware `PIN_BME_SDA=29` (Feather BSP index) |
+| Shared SCL    | 020 (P0.20)   | firmware `PIN_BME_SCL=28`                  |
+| Both VCC      | VCC (3.3 V)   | Do not use RAW/5 V for sensors             |
+| Both GND      | GND           |                                            |
+| VL53L1X XSHUT | (optional)    | e.g. 022 (P0.22); firmware pin `30` if used |
+
 ### Adafruit Feather (`env:nrf52840`)
 
 ![Feather nRF52840 assembly wiring](wiring/generated/feather.svg)
 
 | Signal        | Feather pin | Notes                                      |
 |---------------|-------------|--------------------------------------------|
-| Shared SDA    | 25 (SDA)   | BME280 + VL53L3CX                          |
+| Shared SDA    | 25 (SDA)   | BME280/BMP280 + VL53L1X                    |
 | Shared SCL    | 26 (SCL)   |                                            |
 | Both VCC      | 3V3         |                                            |
 | Both GND      | GND         |                                            |
