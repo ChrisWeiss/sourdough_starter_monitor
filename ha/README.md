@@ -15,7 +15,7 @@ After discovery, adjust these entity IDs to match your install (Developer Tools 
 | Reading   | Typical entity                          |
 |-----------|-----------------------------------------|
 | Temp      | `sensor.sourdough_temperature`          |
-| Humidity  | `sensor.sourdough_humidity` (BME280 only; absent with BMP280) |
+| Humidity  | `sensor.sourdough_humidity` (present with BME280; absent if BMP280 fallback) |
 | Distance  | `sensor.sourdough_distance` — set unit to **mm** in entity settings |
 | Battery   | `sensor.sourdough_battery`              |
 | Pressure  | `sensor.sourdough_pressure`             |
@@ -27,13 +27,13 @@ Distance in MQTT: `distance_mm` (preferred) plus legacy `distance` in cm for old
 ## MQTT topic
 
 - Topic: `sourdough/sourdough/state`
-- Payload example (BMP280 — no humidity):
+- Payload example (BME280):
 
 ```json
-{"humidity":null,"temp":24.50,"distance_mm":192,"distance":19,"battery":97,"pressure":1013.25}
+{"humidity":55.2,"temp":24.50,"distance_mm":192,"distance":19,"battery":97,"pressure":1013.25}
 ```
 
-With a BME280, `humidity` is a number instead of `null`.
+If the board falls back to BMP280, `humidity` is `null` and the humidity entity is absent.
 
 Replace the middle path segment with a stable device id if you run more than one jar.
 

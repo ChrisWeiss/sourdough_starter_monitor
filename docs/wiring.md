@@ -48,7 +48,7 @@ nice!nano-compatible Pro Micro footprint (silkscreen `017` / `020` = P0.17 / P0.
 
 | Signal        | Feather pin | Notes                                      |
 |---------------|-------------|--------------------------------------------|
-| Shared SDA    | 25 (SDA)   | BME280/BMP280 + VL53L1X                    |
+| Shared SDA    | 25 (SDA)   | BME280 + VL53L1X (BMP280 also works)       |
 | Shared SCL    | 26 (SCL)   |                                            |
 | Both VCC      | 3V3         |                                            |
 | Both GND      | GND         |                                            |

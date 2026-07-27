@@ -5,7 +5,7 @@
 # Distance is published in millimetres. In HA, set the distance entity's
 # unit of measurement to mm (entity cog → Unit of measurement) so the state
 # is not converted to inches before this automation runs.
-# BMP280 builds have no humidity entity — payload uses null for humidity.
+# Humidity is present with BME280; BMP280 fallback leaves the entity absent → null.
 
 alias: Sourdough BTHome → MQTT
 id: sourdough_bthome_mqtt_republish

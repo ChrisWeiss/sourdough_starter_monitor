@@ -9,7 +9,7 @@ Instead of Twilio Narrowband cellular, the jar node **advertises BTHome v2 over 
 | Role | Prototype | Production |
 |------|-----------|------------|
 | MCU | Lolin / WeMos ESP32-WROOM DevKit | nRF52840 (Pro Micro / SuperMini, Feather, or XIAO) + LiPo |
-| Climate | BMP280/BME280 (I2C) | same (BMP280: no humidity) |
+| Climate | BME280 (I2C; BMP280 fallback: no humidity) | same |
 | Distance | VL53L1X ToF (I2C) | same; keep lid-to-dough ≥ ~30–40 mm |
 | Enclosure | Bench wiring | sourd.io v2.5 jar stack + remixed lid insert |
 
